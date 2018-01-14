@@ -1,0 +1,45 @@
+{% extends 'layout.html.twig' %}
+
+{% block header_title %}
+    Fiche produit "{{ prod_name }}"
+{% endblock %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-sm-4">
+    {# {{ asset('theme/img/nutella.jpg') }} #}
+    <img src="{{ picture }}" class="img-responsive" style="max-width: 100%;"/>
+    </div>
+    <div class="col-sm-8">
+        <h3> {{ prod_name }}</h3>
+        <h4>Code barre {{code_barre}}</h4>
+        <hr />
+        <p>
+            <b>Quantité:</b> 750g <br/>
+        </p>
+            <b>Ingrédients:</b>          
+            <ul>
+            {% for ingredient in tab_ingre %}
+                <li> {{ ingredient }} </li>
+            {% endfor %}
+            </ul>
+        <p>Produit consulté <b>{{nb_consult}} </b> fois </p>
+        
+        {% for noted in avg_note %}
+            <p>Note moyenne de ce produit : {{ noted["AVG(note)"] }} </p>
+        {% endfor %}
+        
+        <h3> Noter ce produit </h3>
+        <form method="post" action="">
+            <p> Note : </p>
+             {{ form_widget(form.note) }}
+            <p> Commentaire : <p>
+            {{ form_widget(form.commentaire) }}<br>
+            {{ form_widget(form.save) }}
+            <input type="submit" class="btn btn-primary" value="Go!" />
+              {{ form_end(form) }}
+          </form>
+
+    </div>
+</div>
+{% endblock %}

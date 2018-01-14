@@ -1,0 +1,40 @@
+{% extends 'layout.html.twig' %}
+
+{% block header_title %}
+    Recherche
+{% endblock %}
+
+{% block contents %}
+<div class="row">
+		<div class="col-md-12">
+		{% if error is defined %}
+			<div class="alert alert-danger" role="alert">
+			  Produit non trouvé, code barre éronné!
+			</div>
+		{% else %}
+		<img src="{{picture}}">
+		<h1> {{ prod_name }}</h1>
+		<p><b>Marque</b> : {{brand}}</p>
+		<p><b>Dernière édition : </b>{{ last_edition }} </p>
+		<p>Produit consulté <b>{{nb_consult}} </b> fois </p>
+		<p><b>Description détaillée</b></p>
+		
+		<table class="table">
+		<tr>
+			<th>Sucre</th>
+			<th>Gras</th>
+			<th>Sel</th>
+			<th> Protéines</th>
+		</tr>
+		<tr>
+		    <td>{{sugar}}</td>
+		    <td>{{fat}}</td> 
+		    <td>{{salt}}</td>
+		    <td>{{proteins}}</td>
+		 </tr>
+
+		</table>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}
