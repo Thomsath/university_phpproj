@@ -20,7 +20,8 @@ class ProductRepository extends EntityRepository
     {
     	// Meilleur produit > photo via api , nom, code_barre de product
     	//  + liaision via evaluation
-		$sql = 'SELECT AVG(note), code_barre, evaluation.product_id FROM evaluation, product WHERE evaluation.product_id = product.id GROUP BY code_barre ORDER BY note DESC LIMIT 0,8';
+
+        $sql = 'SELECT AVG(note) as avg_note, code_barre, evaluation.product_id FROM evaluation, product WHERE evaluation.product_id = product.id GROUP BY code_barre ORDER BY avg_note DESC LIMIT 0,8';
 
 		return $this->getEntityManager()->getConnection()->executeQuery($sql)->fetchAll();
     }
