@@ -28,8 +28,6 @@ class NotationsType extends AbstractType
             'attr' => [
                 'placeholder' => 'Ecrivez ici votre avis !'
             ]
-        ])
-
-        ->add('save', SubmitType::class);
+        ]);
     }
 }

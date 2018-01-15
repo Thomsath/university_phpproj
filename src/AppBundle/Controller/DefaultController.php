@@ -36,33 +36,49 @@ class DefaultController extends Controller
                     ->getRepository(Product::class)
                     ->findBestProducts();
         $i = 0;
-        foreach($bestProd as $best) {
-            
-            $cb_bestnote = $bestProd[$i]["code_barre"];
-            $cb_bestnote_tab[$i] = $bestProd[$i]["code_barre"];
-            //  On recherche le produit sur l'API
-            $json = file_get_contents("https://fr.openfoodfacts.org/api/v0/produit/" . $cb_bestnote);
-            $data_besnote = json_decode($json, true);
 
-            $picture_bestnote[$i] = $data_besnote['product']['image_url'];
-            $prod_name_bestnote[$i] = $data_besnote['product']['product_name'];
 
-            //$id[$i] = $bestProd[$i]["product_id"];
-            //$note[$i] = $bestProd[$i]["AVG(note)"];
-            $i++;
+        if(sizeof($bestProd) == 0 ) {
+            $bestProd_none = "Aucun produit pour l'instant !";
         }
-        $i = 0;
-        foreach ($consult as $consultation){
-            $cb =  $consultation->getCodeBarre();
-            $cb_tab[$i] = $consultation->getCodeBarre();
-            $json = file_get_contents("https://fr.openfoodfacts.org/api/v0/produit/" . $cb);
-            $data = json_decode($json, true);
+        else {
+             $i = 0;
+             $bestProd_none = "";
+            // Liste produits non vide donc on peut déterminer les meilleurs produits
+            foreach($bestProd as $best) {
+                
+                $cb_bestnote = $bestProd[$i]["code_barre"];
+                $cb_bestnote_tab[$i] = $bestProd[$i]["code_barre"];
+                //  On recherche le produit sur l'API
+                $json = file_get_contents("https://fr.openfoodfacts.org/api/v0/produit/" . $cb_bestnote);
+                $data_besnote = json_decode($json, true);
+
+                $picture_bestnote[$i] = $data_besnote['product']['image_url'];
+                $prod_name_bestnote[$i] = $data_besnote['product']['product_name'];
+
+                //$id[$i] = $bestProd[$i]["product_id"];
+                //$note[$i] = $bestProd[$i]["AVG(note)"];
+                $i++;
+            }
+        }
+        if(sizeof($consult) == 0 ) {
+           $consult_none = "Aucun produit pour l'instant !";
+        }
+        else {
+            $consult_none = "";
+            $i = 0;
+            foreach ($consult as $consultation){
+                $cb =  $consultation->getCodeBarre();
+                $cb_tab[$i] = $consultation->getCodeBarre();
+                $json = file_get_contents("https://fr.openfoodfacts.org/api/v0/produit/" . $cb);
+                $data = json_decode($json, true);
 
 
-            // Amélioration : 1 tableau associatif
-            $tab_name[$i] = $data['product']['product_name'];
-            $tab_pic[$i] = $data['product']['image_url'];
-            $i++;
+                // Amélioration : 1 tableau associatif
+                $tab_name[$i] = $data['product']['product_name'];
+                $tab_pic[$i] = $data['product']['image_url'];
+                $i++;
+                }
             }
         return [
             'form' => $form->createView(),
@@ -74,7 +90,9 @@ class DefaultController extends Controller
             'prodname_bestnote' => $prod_name_bestnote,
             'prodpic_bestnote' => $picture_bestnote,
             'cb_bestnote' => $cb_bestnote,
-            'cb_bestnote_tab' => $cb_bestnote_tab
+            'cb_bestnote_tab' => $cb_bestnote_tab,
+            'consult_none' => $consult_none,
+            'bestProd_none' => $bestProd_none
         ];
     }
 
@@ -148,18 +166,30 @@ class DefaultController extends Controller
             }
 
             //  Partie formulaire de notation d'un produit QUESTION 6
-
-            $mark = new Evaluation();
-
-            $form = $this->createForm(NotationsType::class, $mark);
-            if ($form->isSubmitted() && $form->isValid()) {
-                $mark = $form->getData();
-                var_dump($mark);
-                die();
-                $mark->persist();
-                $mark->flush();
-                // si form bon >>> redirect homepage
-                return $this->redirectToRoute('homepage');
+             $user = $this->getUser();
+            $user_id = $user->getId();
+            $prod_id = $product->getId();
+           $existbdd = $em
+                     ->getRepository(Evaluation::class)
+                     ->findMarkUser($user_id, $prod_id);
+                     
+            // Ici on test si l'utilisateur a déjà voté ou non         
+            if(sizeof($existbdd) == 0) {
+                $form_status = 1;
+                $mark = new Evaluation();
+                $form = $this->createForm(NotationsType::class, $mark);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $mark = $form->getData();
+                    var_dump($mark);
+                    die();
+                    $mark->persist();
+                    $mark->flush();
+                    // si form bon >>> redirect homepage
+                    return $this->redirectToRoute('homepage');
+                }
+            }
+            else {
+                $form_status = 0;
             }
 
             // On récupère les meilleus notes pour un produit  via le repo QUESTION 7
@@ -183,7 +213,8 @@ class DefaultController extends Controller
                 'tab_ingre' => $tab_ingre,
                 //'quantity' => $quantity,
                 'form' => $form->createView(),
-                'avg_note' => $avg_note
+                'avg_note' => $avg_note,
+                'form_status' => $form_status
             ];
         }
     }

@@ -86,4 +86,38 @@ class User extends BaseUser
     {
         return $this->sexe;
     }
+
+     /**
+     * Set sexe
+     *
+     * @return boolean
+     */
+    public function setSexe($sexe)
+    {
+        $this->sexe = $sexe;
+        return $this;
+    }
+
+     /**
+     * Set nom
+     *
+     * @return string
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+        return $this;
+    }
+
+     /**
+     * Set date_naissance
+     *
+     * @return datetime
+     */
+    public function setDateNaissance($date_naissance)
+    {
+        $this->date_naissance = $date_naissance;
+        return $this;
+    }
+
 }

@@ -28,10 +28,11 @@
         <h2>Mieux notés</h2>
     </div>
     {% set i = 0 %}
+    {{bestProd_none}}
     {% for bestnote_pic in prodpic_bestnote %}
       <div class="col-md-4" style="padding-top: 15px">
         <a href="{{ path('product', {'code_barre': cb_bestnote_tab[i]}) }}"><div class="product col-lg-12 p-1" style="display: flex; align-items: center; flex-direction: column; text-align: center;">
-          <img src="{{ bestnote_pic }}" class="recently_consult">
+          <img src="{{ bestnote_pic }}" class="recently_consult" style="width: auto !important; height: 120px;">
           <h4>{{ prodname_bestnote[i] }} </h4>
           {% set i = i + 1 %}
         </div>
@@ -43,11 +44,11 @@
         <h2>Consultés récemment</h2>
     </div>
     {% set i = 0 %}
-
+    {{ consult_none }}
     {% for pic in tab_pic %}
      <div class="col-md-4" style="padding-top: 15px">
          <a href="{{ path('product', {'code_barre': cb_tab[i]}) }}"><div class="product col-lg-12 p-1" style="display: flex; align-items: center; flex-direction: column;">
-          <img src="{{ pic }}" class="recently_consult">
+          <img src="{{ pic }}" class="recently_consult" style="width: auto !important; height: 120px;">
           <h4>{{tab_name[i] }} </h4>
           {% set i = i + 1 %}
         </div></a>

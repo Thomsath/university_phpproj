@@ -28,17 +28,23 @@
         {% for noted in avg_note %}
             <p>Note moyenne de ce produit : {{ noted["AVG(note)"] }} </p>
         {% endfor %}
-        
+    {% if is_granted('ROLE_USER') %}
         <h3> Noter ce produit </h3>
+        {% if form_status == 0 %}
+        Vous avez déjà voté ! 
+        {% else %}
         <form method="post" action="">
             <p> Note : </p>
              {{ form_widget(form.note) }}
             <p> Commentaire : <p>
             {{ form_widget(form.commentaire) }}<br>
-            {{ form_widget(form.save) }}
             <input type="submit" class="btn btn-primary" value="Go!" />
               {{ form_end(form) }}
           </form>
+        {% endif %}
+    {% else %}
+        <b> Connecte toi ou inscris toi pour pouvoir noter ce produit ! <b>
+    {% endif %}
 
     </div>
 </div>

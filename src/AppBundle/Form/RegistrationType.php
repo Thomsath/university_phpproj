@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 class RegistrationType extends AbstractType
 {
@@ -20,7 +21,7 @@ class RegistrationType extends AbstractType
             ]
         ])
 
-         ->add('date_naissance', TextType::class, [
+         ->add('date_naissance', DateTimeType::class, [
             'attr' => [
                 'placeholder' => 'Votre date de naissance'
             ]
